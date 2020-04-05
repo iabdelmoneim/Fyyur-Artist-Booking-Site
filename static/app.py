@@ -1,36 +1,32 @@
+import json
 import logging
-from datetime import datetime
-from logging import Formatter, FileHandler
+import os
+import sys
+from logging import FileHandler, Formatter
 
 import babel
 import dateutil.parser
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import (Flask, Response, flash, jsonify, redirect, render_template,request, url_for)
+from flask_migrate import Migrate
 from flask_moment import Moment
-from flask import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import Form
+from forms import *
+from models import db, Artist, Venue, Show
 from forms import *
 from migrate import Migrate
 
 from static.forms import VenueForm, ArtistForm
 
-def create_app(app):
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_mapping(
-
-import mysql.connector
-
-mydb = [mysql.connector.connect(
-    host="localhost",
-    user="postgres",
-    passwd="fyuur"
-),
-
-    moment] = Moment(app)
+app = Flask(__name__)
+moment = Moment(app)
 app.config.from_object('config')
-db = SQLAlchemy(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres@localhost:5432/fyuur'
-db = SQLAlchemy(app)
+db.init_app(app)
 migrate = Migrate(app, db)
+
+SQLALCHEMY_DATABASE_URI = 'postgres://postgres@localhost:5432/fyuur'
+
+
 
 class Venue(db.Model):
     __tablename__ = 'Venue'
